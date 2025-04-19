@@ -35,6 +35,7 @@ public class ServerConfiguration {
                 .getResourceAsStream(CONFIG_FILE)) {
 
             if (in == null) {
+                logger.error("Debe colocar el archivo server-config.json en la carpeta resources");
                 throw new IllegalStateException(
                         "Configuration file not found on classpath: " + CONFIG_FILE);
             }
@@ -43,6 +44,8 @@ public class ServerConfiguration {
                 JsonObject root = reader.readObject();
 
                 this.port = root.getInt("port");
+            } catch (Exception e) {
+                logger.error("No pudo leer un elemento de la configuracion", e);
             }
 
         } catch (IOException e) {
