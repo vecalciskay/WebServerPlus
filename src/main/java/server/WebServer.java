@@ -11,10 +11,10 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class WebServer {
-    private static Logger logger = LogManager.getRootLogger();
+    private static final Logger logger = LogManager.getRootLogger();
     private final int port;
     private boolean running;
-    private PropertyChangeSupport observado;
+    private final PropertyChangeSupport observado;
 
     public WebServer(int p) {
         port = p;
@@ -56,12 +56,9 @@ public class WebServer {
                     Socket clt = srv.accept();
                     logger.info("{} - Un cliente se acaba de conectar, comienza a dar el servicio", getName());
                     notifyNewClient();
-                    Thread t = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ClientService client = ClientServiceBuilder.buildService(clt);
-                            client.start();
-                        }
+                    Thread t = new Thread(() -> {
+                        ClientService client = ClientServiceBuilder.buildService(clt);
+                        client.start();
                     });
                     t.start();
                 } catch (SocketTimeoutException e1) {
