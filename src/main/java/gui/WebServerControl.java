@@ -7,13 +7,10 @@ import server.WebServer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class WebServerControl extends JFrame {
     private static final Logger logger = LogManager.getRootLogger();
-    private WebServer server;
-    private WebServerPanel serverPanel;
+    private final WebServer server;
 
     public static void main(String[] args) {
         new WebServerControl();
@@ -43,7 +40,7 @@ public class WebServerControl extends JFrame {
 
     private void createPanel() {
         this.getContentPane().setLayout(new BorderLayout());
-        serverPanel = new WebServerPanel(server);
+        WebServerPanel serverPanel = new WebServerPanel(server);
         this.getContentPane().add(serverPanel, BorderLayout.CENTER);
     }
 
@@ -56,19 +53,21 @@ public class WebServerControl extends JFrame {
         bar.add(menu);
 
         JMenuItem item = new JMenuItem("Comenzar");
-        item.addActionListener(e -> menuControl_comenzar());
+        item.addActionListener(e -> menuControl_comenzar(e.getActionCommand()));
         menu.add(item);
 
         item = new JMenuItem("Detener");
-        item.addActionListener(e -> menuControl_detener());
+        item.addActionListener(e -> menuControl_detener(e.getActionCommand()));
         menu.add(item);
     }
 
-    private void menuControl_detener() {
+    private void menuControl_detener(String cmd) {
+        logger.info("Ejecutando comando detener ({})", cmd);
         server.stop();
     }
 
-    private void menuControl_comenzar() {
+    private void menuControl_comenzar(String cmd) {
+        logger.info("Ejecutando comando comenzar ({})", cmd);
         server.start();
     }
 }
