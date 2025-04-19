@@ -16,10 +16,11 @@ public class WebServerControl extends JFrame {
     private WebServerPanel serverPanel;
 
     public static void main(String[] args) {
-        WebServerControl srv = new WebServerControl();
+        new WebServerControl();
     }
 
     public WebServerControl() {
+        logger.info("Frame comienza a mostrarse");
         ServerConfiguration config = ServerConfiguration.getOrCreate();
         server = new WebServer(config.getPort());
 
@@ -29,9 +30,13 @@ public class WebServerControl extends JFrame {
     private void init() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        logger.info("Frame creando panel para colocarlo al centro");
         createPanel();
+
+        logger.info("Frame creando menu para la barra de menus");
         createMenu();
 
+        logger.info("Frame mostrándose");
         pack();
         setVisible(true);
     }
@@ -51,21 +56,11 @@ public class WebServerControl extends JFrame {
         bar.add(menu);
 
         JMenuItem item = new JMenuItem("Comenzar");
-        item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuControl_comenzar();
-            }
-        });
+        item.addActionListener(e -> menuControl_comenzar());
         menu.add(item);
 
         item = new JMenuItem("Detener");
-        item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                menuControl_detener();
-            }
-        });
+        item.addActionListener(e -> menuControl_detener());
         menu.add(item);
     }
 

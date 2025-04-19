@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class WebServerPanel extends JPanel implements PropertyChangeListener {
-    private WebServer modelo;
+    private final WebServer modelo;
 
     public WebServerPanel(WebServer srv) {
         modelo = srv;
