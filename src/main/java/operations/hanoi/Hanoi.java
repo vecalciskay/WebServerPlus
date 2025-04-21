@@ -14,7 +14,7 @@ public class Hanoi {
     }
 
     /**
-     * El numero de la torre que tiene los anillos debe ser un número entre 0, 1, y 2.
+     * El número de la torre que tiene los anillos debe ser un número entre 0, 1, y 2.
      * @param n
      * @param numeroTorreConAnillos
      */
