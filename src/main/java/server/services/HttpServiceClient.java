@@ -8,8 +8,8 @@ import server.HttpErrorBuilder;
 import server.HttpError;
 import operations.http.MimeUtils;
 
+import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -77,47 +77,41 @@ public class HttpServiceClient extends ClientService {
             String extension = completePath.substring(lastDot);
             mime = MimeUtils.getMime(extension);
         }
-        if (Files.exists(path)) {
-            if (Files.isDirectory(path)) {
-                logger.warn("{} El GET se solicito a una carpeta, no devuelve nada", getName());
-                return;
-            }
 
-            try {
+        try {
+            if (Files.exists(path)) {
+                if (Files.isDirectory(path)) {
+                    logger.warn("{} El GET se solicito a una carpeta, no devuelve nada", getName());
+                    return;
+                }
                 logger.info("{} Archivo existe, devolviendo completo", getName());
 
                 byte[] allBytes = Files.readAllBytes(path);
                 byte[] headerBytes = buildHeaders(mime, allBytes.length);
 
-                byte[] response    = new byte[headerBytes.length + allBytes.length];
+                byte[] response = new byte[headerBytes.length + allBytes.length];
 
                 System.arraycopy(headerBytes, 0, response, 0, headerBytes.length);
-                System.arraycopy(allBytes,    0, response, headerBytes.length, allBytes.length);
+                System.arraycopy(allBytes, 0, response, headerBytes.length, allBytes.length);
 
                 output.write(response);
                 output.flush();
 
                 logger.info("{} Se paso un archivo {} de {} bytes", getName(), mime, allBytes.length);
-            } catch(Exception e) {
-                logger.error("{} Hubo un error de IO", getName(), e);
+
+            } else {
+                logger.warn("{} El archivo solicitado no existe, entonces devuelve 404", getName());
+
+                HttpError error404 = HttpErrorBuilder.build404(completePath);
+                byte[] response = error404.getResponse();
+
+                output.write(response);
+                output.flush();
+
+                logger.info("{} Se paso un mensaje de error 404", getName());
             }
-        } else {
-            logger.warn("{} El archivo solicitado no existe, entonces devuelve 404", getName());
-
-            HttpError error404 = HttpErrorBuilder.build404(this);
+        } catch (IOException e) {
+            logger.error("{} Hubo un error de IO", getName(), e);
         }
-    }
-
-    private byte[] buildHeaders(String mime, int length) {
-
-        StringBuilder headers = new StringBuilder();
-        String line = "HTTP/1.1 200 OK\r\n";
-        headers.append(line);
-        line = "Content-Type: " + mime + "\r\n";
-        headers.append(line);
-        line = "Content-Length: " + length + "\r\n\r\n";
-        headers.append(line);
-
-        return headers.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

@@ -1,6 +1,7 @@
 package server;
 
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public abstract class ClientService implements IClientService {
@@ -23,5 +24,17 @@ public abstract class ClientService implements IClientService {
     public String getName() {
         String className = this.getClass().getSimpleName();
         return className + " " + clientId;
+    }
+
+    protected byte[] buildHeaders(String mime, int length) {
+        StringBuilder headers = new StringBuilder();
+        String line = "HTTP/1.1 200 OK\r\n";
+        headers.append(line);
+        line = "Content-Type: " + mime + "\r\n";
+        headers.append(line);
+        line = "Content-Length: " + length + "\r\n\r\n";
+        headers.append(line);
+
+        return headers.toString().getBytes(StandardCharsets.UTF_8);
     }
 }
