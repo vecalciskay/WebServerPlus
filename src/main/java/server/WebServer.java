@@ -10,13 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class WebServer {
     private static final Logger logger = LogManager.getRootLogger();
-    private static final int MILISECONDS_TIMEOUT_LOOP = 2000;
+    private static final int MILLISECONDS_TIMEOUT_LOOP = 2000;
     private static int clientId;
     private final int port;
     private boolean running;
@@ -62,7 +61,7 @@ public class WebServer {
             running = true;
             notifyStartStop();
             while (running) {
-                srv.setSoTimeout(MILISECONDS_TIMEOUT_LOOP);
+                srv.setSoTimeout(MILLISECONDS_TIMEOUT_LOOP);
                 try {
                     Socket clt = srv.accept();
                     logger.info("{} - Un cliente se acaba de conectar, comienza a dar el servicio", getName());

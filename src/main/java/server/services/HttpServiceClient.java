@@ -20,10 +20,10 @@ public class HttpServiceClient extends ClientService {
 
     private static final Logger logger = LogManager.getRootLogger();
     private static final int MAX_NUMBER_CHARS_EXTENSION = 4;
-    private String pathAndQuery;
+    private final String pathAndQuery;
+    private final String httpCommand;
     private String pathOnly;
     private String argsOnly;
-    private String httpCommand;
 
     public HttpServiceClient(int id, String operation, String path, List<String> input, OutputStream output) {
         super(id, input, output);

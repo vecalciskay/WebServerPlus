@@ -16,10 +16,6 @@ public abstract class ClientService implements IClientService {
         output = out;
         headers = inputRead.subList(1,inputRead.size());
     }
-
-    public int getClientId() {
-        return clientId;
-    }
     
     public String getName() {
         String className = this.getClass().getSimpleName();
