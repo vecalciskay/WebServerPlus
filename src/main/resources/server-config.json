@@ -1,1 +1,4 @@
-{ "port": 8023 }
+{
+  "port": 8023,
+  "wwwroot": "C:/work/Dropbox/Personal/Programming/javaprojects/WebServerPlus/samplewww"
+}

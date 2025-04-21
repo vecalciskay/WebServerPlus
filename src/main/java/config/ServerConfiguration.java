@@ -16,6 +16,7 @@ public class ServerConfiguration {
     private static ServerConfiguration instance;
 
     private int port;
+    private String wwwroot;
 
     public static ServerConfiguration getOrCreate() {
         if (instance == null) {
@@ -43,7 +44,8 @@ public class ServerConfiguration {
             try (JsonReader reader = Json.createReader(in)) {
                 JsonObject root = reader.readObject();
 
-                this.port = root.getInt("port");
+                this.port = root.getInt(ServerConfigurationKey.port.toString());
+                this.wwwroot = root.getString(ServerConfigurationKey.wwwroot.toString());
             } catch (Exception e) {
                 logger.error("No pudo leer un elemento de la configuracion", e);
             }
@@ -57,6 +59,10 @@ public class ServerConfiguration {
     /* ---------- getters ---------- */
     public int getPort() {
         return port;
+    }
+
+    public String getWwwroot() {
+        return wwwroot;
     }
 
     @Override public String toString() {
