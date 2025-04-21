@@ -85,7 +85,7 @@ public class WebServerControl extends JFrame {
 
     /**
      * Manejador del item salir del menu Control
-     * @param cmd
+     * @param cmd Por el momento la confirmacion que es el comando esperado
      */
     private void menuControl_salir(String cmd) {
         if (server.isRunning()) {
@@ -98,7 +98,7 @@ public class WebServerControl extends JFrame {
 
     /**
      * Manejador del item detener del menu Control
-     * @param cmd
+     * @param cmd Por el momento la confirmacion que es el comando esperado
      */
     private void menuControl_detener(String cmd) {
         logger.info("Ejecutando comando detener ({})", cmd);
@@ -107,7 +107,7 @@ public class WebServerControl extends JFrame {
 
     /**
      * Manejador del item comenzar del menu Control.
-     * @param cmd
+     * @param cmd Por el momento la confirmacion que es el comando esperado
      */
     private void menuControl_comenzar(String cmd) {
         logger.info("Ejecutando comando comenzar ({})", cmd);

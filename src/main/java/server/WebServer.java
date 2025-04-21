@@ -99,7 +99,7 @@ public class WebServer {
     public List<String> readAllLines(InputStream input) throws IOException {
         InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
 
-        List<String> lines = new ArrayList<>();
+        List<String> lines;
         StringBuilder line = new StringBuilder();
 
         // readLine() returns null when the peer closes the stream
