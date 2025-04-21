@@ -6,8 +6,8 @@ import java.beans.PropertyChangeSupport;
 
 public class Hanoi {
     private Torre[] torres;
-    private PropertyChangeSupport observado;
-    private int numeroAnillos;
+    private final PropertyChangeSupport observado;
+    private final int numeroAnillos;
 
     public Hanoi(int n) {
         this(n, 0);
