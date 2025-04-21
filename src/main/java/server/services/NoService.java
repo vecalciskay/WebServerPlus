@@ -7,7 +7,7 @@ import java.util.List;
 
 public class NoService extends ClientService {
     public NoService(int id, List<String> input, OutputStream output) {
-        clientId = id;
+        super(id, input, output);
     }
 
     @Override

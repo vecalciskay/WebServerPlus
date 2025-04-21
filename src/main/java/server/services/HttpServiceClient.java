@@ -68,7 +68,7 @@ public class HttpServiceClient extends ClientService {
 
         Path path = Path.of(completePath);
 
-        String mime = "";
+        String mime;
         int lastDot = completePath.lastIndexOf('.',
                 completePath.length() - MAX_NUMBER_CHARS_EXTENSION + 1);
         if (lastDot < 0) {

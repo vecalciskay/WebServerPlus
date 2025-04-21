@@ -21,12 +21,10 @@ public class WebServer {
     private final int port;
     private boolean running;
     private final PropertyChangeSupport observado;
-    private int numberClients;
 
     public WebServer(int p) {
         port = p;
         observado = new PropertyChangeSupport(this);
-        numberClients = 0;
         clientId = 0;
     }
 
@@ -49,12 +47,11 @@ public class WebServer {
     }
 
     public void notifyNewClient(List<String> inputLines) {
-        if (inputLines == null || inputLines.size() < 1) {
+        if (inputLines == null || inputLines.isEmpty()) {
             logger.error("{} - No se pudo leer nada de las lineas", getName());
             return;
         }
         logger.info("{} - Notificando de nuevo cliente a observadores", getName());
-        numberClients++;
         observado.firePropertyChange(WebServerEvent.NEW_CLIENT.toString(), "", inputLines.getFirst());
     }
 

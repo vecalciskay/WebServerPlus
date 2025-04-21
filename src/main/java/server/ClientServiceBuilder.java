@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import server.services.*;
 
 import java.io.OutputStream;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,8 +19,8 @@ public class ClientServiceBuilder {
         String pathRelativo = "";
         String operation = "";
         String httpVersion = "";
-        String operationCommand = "";
-        String operationArguments = "";
+        String operationCommand;
+        String operationArguments;
 
         String regex =  "^(GET|POST) (.+) HTTP\\/([0-9]\\.[0-9])$";
         Pattern pattern = Pattern.compile(regex);
