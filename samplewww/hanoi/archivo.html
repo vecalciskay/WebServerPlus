@@ -2,50 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Juego de las Torres de Hanoi</title>
+    <title>Torres de Hanoi (cliente ligero)</title>
     <style>
-        body {
-          font-family: Arial, sans-serif;
-          padding: 20px;
-        }
-
-        #controls {
-          margin-bottom: 20px;
-        }
-
-        #game {
-          display: flex;
-          justify-content: space-around;
-          align-items: flex-end;
-          height: 320px;
-        }
-
-        /* Cada torre ocupa un espacio y crece hacia arriba
-           column-reverse permite que el primer anillo (más grande) quede abajo */
-        .tower {
-          position: relative;
-          width: 120px;
-          height: 100%;
-          border: 2px solid #333;
-          border-top: none;
-          display: flex;
-          flex-direction: column-reverse; /* base en la parte inferior */
-          align-items: center;
-          padding-bottom: 10px;
-        }
-
-        .ring {
-          height: 22px;
-          background: steelblue;
-          border: 1px solid #1c3f5f;
-          margin: 3px 0;
-          border-radius: 4px;
-          color: #fff;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 0.8rem;
-        }
+        body {font-family: Arial, sans-serif; padding: 20px;}
+        #controls {margin-bottom: 20px;}
+        #game {display: flex; justify-content: space-around; align-items: flex-end; height: 320px;}
+        .tower {width: 120px; height: 100%; border: 2px solid #333; border-top: none; display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 10px;}
+        .ring {height: 22px; background: steelblue; border: 1px solid #1c3f5f; margin: 3px 0; border-radius: 4px; color: #fff; display: flex; justify-content: center; align-items: center; font-size: 0.8rem;}
     </style>
 </head>
 <body>
@@ -58,36 +21,39 @@
         <option value="5">5</option>
         <option value="6">6</option>
     </select>
-
     <button id="resetBtn">Reset</button>
     <button id="nextBtn">Siguiente movimiento</button>
 </div>
 
-<!-- Estado actual del juego en formato JSON -->
-<input type="hidden" id="hanoiData" value='{"torres":[{"anillos":[]},{"anillos":[]},{"anillos":[]}]}' />
+<!-- Estado inicial con ids de torre -->
+<input type="hidden" id="hanoiData" value='{"torres":[{"id":0,"anillos":[]},{"id":1,"anillos":[]},{"id":2,"anillos":[]}]}'>
 
 <div id="game"></div>
 
 <script>
     const ringCountSelect = document.getElementById("ringCount");
-    const resetBtn = document.getElementById("resetBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const hanoiInput = document.getElementById("hanoiData");
-    const gameDiv = document.getElementById("game");
+    const resetBtn        = document.getElementById("resetBtn");
+    const nextBtn         = document.getElementById("nextBtn");
+    const hanoiInput      = document.getElementById("hanoiData");
+    const gameDiv         = document.getElementById("game");
 
     let moveNumber = 0;
 
-    // ----- Renderizado de torres y anillos -----
+    // ---------- Render ----------
     function render() {
       const data = JSON.parse(hanoiInput.value);
       gameDiv.innerHTML = "";
 
-      data.torres.forEach((torre) => {
+      // Orden fijo de torres por id (0‑1‑2)
+      const torresOrdenadas = data.torres.slice().sort((a, b) => a.id - b.id);
+
+      torresOrdenadas.forEach(torre => {
         const towerDiv = document.createElement("div");
         towerDiv.className = "tower";
 
-        // Los anillos llegan en orden: grande→pequeño
-        torre.anillos.forEach((anillo) => {
+        // Anillos de mayor → menor
+        const anillosOrdenados = torre.anillos.slice().sort((a, b) => b.tamano - a.tamano);
+        anillosOrdenados.forEach(anillo => {
           const ring = document.createElement("div");
           ring.className = "ring";
           ring.style.width = anillo.tamano * 20 + 40 + "px";
@@ -99,50 +65,32 @@
       });
     }
 
-    // ----- Reset -----
+    // ---------- Reset ----------
     function reset() {
       const n = parseInt(ringCountSelect.value, 10);
-
-      const torres = [
-        { anillos: [] },
-        { anillos: [] },
-        { anillos: [] },
-      ];
-      // Se añaden de mayor a menor ⇒ quedarán de abajo hacia arriba
+      const torres = [0, 1, 2].map(id => ({ id, anillos: [] }));
       for (let i = n; i >= 1; i--) {
         torres[0].anillos.push({ tamano: i });
       }
-
       hanoiInput.value = JSON.stringify({ torres });
       moveNumber = 0;
       render();
     }
 
-    // ----- Cálculo de movimiento número "move" para n anillos -----
-    function calculateMove(n, move) {
-      const moves = [];
-      (function recurse(k, from, to, aux) {
-        if (k === 0) return;
-        recurse(k - 1, from, aux, to);
-        moves.push([from, to]);
-        recurse(k - 1, aux, to, from);
-      })(n, 0, 2, 1);
-      return moves[move - 1];
-    }
-
-    // ----- Siguiente movimiento -----
+    // ---------- Siguiente movimiento (sin lógica local) ----------
     async function next() {
       const n = parseInt(ringCountSelect.value, 10);
       moveNumber++;
-      const [from, to] = calculateMove(n, moveNumber);
 
-      const url = `http://localhost:8023/__op__/hanoi/${from}_${to}_${n}_${moveNumber}`;
+      // Siempre se envía 0_2 como <de>_<a>
+      const url = `http://localhost:8023/__op__/hanoi/0_2_${n}_${moveNumber}`;
 
       try {
         const res = await fetch(url);
         if (!res.ok) throw new Error(res.status);
 
-        const data = await res.json(); // Se espera JSON con el mismo formato
+        // Se espera que el servidor devuelva el nuevo estado JSON
+        const data = await res.json();
         hanoiInput.value = JSON.stringify(data);
         render();
       } catch (err) {
@@ -150,7 +98,7 @@
       }
     }
 
-    // ----- Eventos -----
+    // ---------- Eventos ----------
     resetBtn.addEventListener("click", reset);
     nextBtn.addEventListener("click", next);
     ringCountSelect.addEventListener("change", reset);

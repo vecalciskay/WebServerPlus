@@ -1,6 +1,5 @@
 package operations.images.transform.builders;
 
-import operations.images.Imagen;
 import operations.images.transform.ImageTransformation;
 import operations.images.transform.NoImageTransformation;
 

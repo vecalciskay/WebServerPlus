@@ -31,7 +31,7 @@ public class Hanoi {
     public void reset(int numeroTorreConAnillos) {
         torres = new Torre[3];
         for (int i = 0; i < torres.length; i++) {
-            torres[i] = (i == numeroTorreConAnillos ? new Torre(numeroAnillos) : new Torre());
+            torres[i] = (i == numeroTorreConAnillos ? new Torre(numeroAnillos,i) : new Torre(i));
         }
     }
 

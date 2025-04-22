@@ -5,16 +5,22 @@ import java.util.Stack;
 
 public class Torre {
     private final Stack<Anillo> anillos;
+    private final int index;
 
-    public Torre(int n) {
+
+    public Torre(int n, int idx) {
         anillos = new Stack<Anillo>();
         for (int i = n; i > 0; i--) {
             anillos.push(new Anillo(i));
         }
+
+        index = idx;
     }
 
-    public Torre() {
+    public Torre(int idx) {
+
         anillos = new Stack<Anillo>();
+        index = idx;
     }
 
     public Stack<Anillo> getAnillos() {
@@ -29,6 +35,7 @@ public class Torre {
             arrayBuilder.add(a.getJson());
         }
         JsonArray anillosArray = arrayBuilder.build();
+        builder.add("id", index);
         builder.add("anillos", anillosArray);
 
         return builder.build();

@@ -1,11 +1,8 @@
 package server.services;
 
-import config.ServerConfiguration;
 import operations.http.MimeUtils;
-import operations.images.Imagen;
 import operations.images.transform.builders.ImageTransformBuilder;
 import operations.images.transform.ImageTransformation;
-import operations.images.enums.ImageTransformationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import server.ClientService;
