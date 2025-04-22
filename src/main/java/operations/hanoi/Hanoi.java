@@ -1,10 +1,14 @@
 package operations.hanoi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.json.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class Hanoi {
+    private static final Logger logger = LogManager.getRootLogger();
     private Torre[] torres;
     private final PropertyChangeSupport observado;
     private final int numeroAnillos;
@@ -15,8 +19,8 @@ public class Hanoi {
 
     /**
      * El número de la torre que tiene los anillos debe ser un número entre 0, 1, y 2.
-     * @param n
-     * @param numeroTorreConAnillos
+     * @param n el numero de anillos que se va a colocar en la torre
+     * @param numeroTorreConAnillos la torre donde se colocaran los anillos inicialmente
      */
     public Hanoi(int n, int numeroTorreConAnillos) {
         numeroAnillos = n;
@@ -38,25 +42,31 @@ public class Hanoi {
     /**
      * Este metodo ejecuta la solución de una estructura de Hanoi. Las siguientes
      * condiciones se ajustan
-     * @param de
-     * @param a
-     * @param n
-     * @param hastaMovimiento
+     * @param de El número de torre de inicio de juego
+     * @param a El número de torre a donde se deben llevar los anillos
+     * @param hastaMovimiento El número de movimiento hasta el cual se realizará el hanoi. Si es 0, se hacen todos
      */
-    public void solve(int de, int a, int n, int hastaMovimiento) {
+    public void solve(int de, int a, int hastaMovimiento) {
         reset(de);
-        solveRecursivo(de, a, n, 0, hastaMovimiento);
+        int[] numeroActualMovimientos = new int[1];
+        logger.info("Hanoi Resuelve hanoi de {} a {} para {} anillos hasta movimiento {}",
+                de, a, numeroAnillos, hastaMovimiento);
+        solveRecursivo(de, a, numeroAnillos, numeroActualMovimientos, hastaMovimiento);
     }
 
     private void solveRecursivo(int de, int a, int n,
-                                int numeroActualMovimientos,
+                                int[] numeroActualMovimientos,
                                 int hastaMovimiento) {
+        if (hastaMovimiento > 0 &&
+                numeroActualMovimientos[0] == hastaMovimiento)
+            return;
+
         if (n == 1) {
+            logger.info("Hanoi Movimiento de {} a {}", de, a);
             moverAnillo(de, a);
             notificarCambios();
-            numeroActualMovimientos++;
-            if (numeroActualMovimientos == hastaMovimiento)
-                return;
+            numeroActualMovimientos[0]++;
+            return;
         }
         int pp = 3 - de - a;
         solveRecursivo(de, pp, n-1, numeroActualMovimientos, hastaMovimiento);
@@ -72,6 +82,10 @@ public class Hanoi {
         torres[a].colocar(torres[de].sacar());
     }
 
+    /**
+     * Obtiene el JSON completo, como objeto, del Hanoi, con sus torres y a su vez con sus anillos.
+     * @return el json como objeto. Este objeto se puede imprimir fácilmente.
+     */
     public JsonObject getJson() {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -88,5 +102,16 @@ public class Hanoi {
         builder.add("torres", torresArray);
 
         return builder.build();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+
+        for (Torre torre : torres) {
+            result.append(torre.toString()).append("\n");
+        }
+
+        return result.toString();
     }
 }

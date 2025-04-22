@@ -25,6 +25,7 @@ public class MimeUtils {
         else if (extension.endsWith("html")) mime = "text/html";
         else if (extension.endsWith("htm")) mime = "text/html";
         else if (extension.endsWith("txt")) mime = "text/plain";
+        else if (extension.endsWith("json")) mime = "application/json";
         else if (extension.endsWith("css")) mime = "text/css";
         else if (extension.endsWith("js")) mime = "text/javascript";
 

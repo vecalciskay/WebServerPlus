@@ -1,10 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Proyecto Hanoi</title>
+    <meta charset="UTF-8" />
+    <title>Juego de las Torres de Hanoi</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 20px;
+        }
+
+        #controls {
+          margin-bottom: 20px;
+        }
+
+        #game {
+          display: flex;
+          justify-content: space-around;
+          align-items: flex-end;
+          height: 320px;
+        }
+
+        /* Cada torre ocupa un espacio y crece hacia arriba
+           column-reverse permite que el primer anillo (más grande) quede abajo */
+        .tower {
+          position: relative;
+          width: 120px;
+          height: 100%;
+          border: 2px solid #333;
+          border-top: none;
+          display: flex;
+          flex-direction: column-reverse; /* base en la parte inferior */
+          align-items: center;
+          padding-bottom: 10px;
+        }
+
+        .ring {
+          height: 22px;
+          background: steelblue;
+          border: 1px solid #1c3f5f;
+          margin: 3px 0;
+          border-radius: 4px;
+          color: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-<h1>Hanoi</h1>
+<div id="controls">
+    <label for="ringCount">Nº anillos:</label>
+    <select id="ringCount">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+    </select>
+
+    <button id="resetBtn">Reset</button>
+    <button id="nextBtn">Siguiente movimiento</button>
+</div>
+
+<!-- Estado actual del juego en formato JSON -->
+<input type="hidden" id="hanoiData" value='{"torres":[{"anillos":[]},{"anillos":[]},{"anillos":[]}]}' />
+
+<div id="game"></div>
+
+<script>
+    const ringCountSelect = document.getElementById("ringCount");
+    const resetBtn = document.getElementById("resetBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const hanoiInput = document.getElementById("hanoiData");
+    const gameDiv = document.getElementById("game");
+
+    let moveNumber = 0;
+
+    // ----- Renderizado de torres y anillos -----
+    function render() {
+      const data = JSON.parse(hanoiInput.value);
+      gameDiv.innerHTML = "";
+
+      data.torres.forEach((torre) => {
+        const towerDiv = document.createElement("div");
+        towerDiv.className = "tower";
+
+        // Los anillos llegan en orden: grande→pequeño
+        torre.anillos.forEach((anillo) => {
+          const ring = document.createElement("div");
+          ring.className = "ring";
+          ring.style.width = anillo.tamano * 20 + 40 + "px";
+          ring.textContent = anillo.tamano;
+          towerDiv.appendChild(ring);
+        });
+
+        gameDiv.appendChild(towerDiv);
+      });
+    }
+
+    // ----- Reset -----
+    function reset() {
+      const n = parseInt(ringCountSelect.value, 10);
+
+      const torres = [
+        { anillos: [] },
+        { anillos: [] },
+        { anillos: [] },
+      ];
+      // Se añaden de mayor a menor ⇒ quedarán de abajo hacia arriba
+      for (let i = n; i >= 1; i--) {
+        torres[0].anillos.push({ tamano: i });
+      }
+
+      hanoiInput.value = JSON.stringify({ torres });
+      moveNumber = 0;
+      render();
+    }
+
+    // ----- Cálculo de movimiento número "move" para n anillos -----
+    function calculateMove(n, move) {
+      const moves = [];
+      (function recurse(k, from, to, aux) {
+        if (k === 0) return;
+        recurse(k - 1, from, aux, to);
+        moves.push([from, to]);
+        recurse(k - 1, aux, to, from);
+      })(n, 0, 2, 1);
+      return moves[move - 1];
+    }
+
+    // ----- Siguiente movimiento -----
+    async function next() {
+      const n = parseInt(ringCountSelect.value, 10);
+      moveNumber++;
+      const [from, to] = calculateMove(n, moveNumber);
+
+      const url = `http://localhost:8023/__op__/hanoi/${from}_${to}_${n}_${moveNumber}`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.status);
+
+        const data = await res.json(); // Se espera JSON con el mismo formato
+        hanoiInput.value = JSON.stringify(data);
+        render();
+      } catch (err) {
+        console.error("Error al obtener el siguiente movimiento", err);
+      }
+    }
+
+    // ----- Eventos -----
+    resetBtn.addEventListener("click", reset);
+    nextBtn.addEventListener("click", next);
+    ringCountSelect.addEventListener("change", reset);
+
+    // Render inicial
+    window.addEventListener("load", reset);
+</script>
 </body>
 </html>

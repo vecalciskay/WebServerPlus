@@ -23,4 +23,26 @@ public class HanoiTest {
         String expected = "{\"torres\":[{\"anillos\":[{\"tamano\":3},{\"tamano\":2},{\"tamano\":1}]},{\"anillos\":[]},{\"anillos\":[]}]}";
         assertEquals(expected, result);
     }
+
+    @Test
+    void resolverHanoi() {
+        Hanoi h = new Hanoi(3, 0);
+        h.solve(0,2,0);
+
+        String expected = "|-\n|-\n|-3-2-1-\n";
+        String result = h.toString();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void resolverHanoiHastaMovimiento() {
+        Hanoi h = new Hanoi(3, 1);
+        h.solve(1,0,4);
+
+        String expected = "|-3-\n|-\n|-2-1-\n";
+        String result = h.toString();
+
+        assertEquals(expected, result);
+    }
 }

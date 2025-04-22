@@ -50,10 +50,10 @@ public class ClientServiceBuilder {
                 operationCommand, operationArguments);
 
         if (operationCommand.equals(WebServerOperation.hanoi.toString()))
-            return new HanoiService(id, inputLines, output);
+            return new HanoiService(id, operationCommand, operationArguments, inputLines, output);
 
         if (operationCommand.equals(WebServerOperation.images.toString()))
-            return new ImageService(id, inputLines, output);
+            return new ImageService(id, operationCommand, operationArguments, inputLines, output);
 
         if (operationCommand.equals(WebServerOperation.complex.toString()))
             return new ComplexService(id, inputLines, output);

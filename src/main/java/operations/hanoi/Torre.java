@@ -41,4 +41,14 @@ public class Torre {
     public void colocar(Anillo a) {
         anillos.push(a);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("|-");
+        for (Anillo obj : anillos) {
+            result.append(obj);
+        }
+        return result.toString();
+    }
 }

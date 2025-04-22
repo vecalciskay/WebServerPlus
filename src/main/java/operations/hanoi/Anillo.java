@@ -17,9 +17,12 @@ public class Anillo {
 
     public JsonObject getJson() {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-
         builder.add("tamano", tamano);
-
         return builder.build();
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(tamano) + "-";
     }
 }
