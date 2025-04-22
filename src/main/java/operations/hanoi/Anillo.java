@@ -23,6 +23,6 @@ public class Anillo {
 
     @Override
     public String toString() {
-        return String.valueOf(tamano) + "-";
+        return tamano + "-";
     }
 }

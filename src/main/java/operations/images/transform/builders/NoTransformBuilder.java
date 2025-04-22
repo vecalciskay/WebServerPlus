@@ -4,7 +4,7 @@ import operations.images.transform.ImageTransformation;
 import operations.images.transform.NoImageTransformation;
 
 public class NoTransformBuilder extends ImageTransformBuilder {
-    public NoTransformBuilder(String args) {
+    public NoTransformBuilder() {
 
     }
 

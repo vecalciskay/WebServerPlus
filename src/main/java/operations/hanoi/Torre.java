@@ -9,7 +9,7 @@ public class Torre {
 
 
     public Torre(int n, int idx) {
-        anillos = new Stack<Anillo>();
+        anillos = new Stack<>();
         for (int i = n; i > 0; i--) {
             anillos.push(new Anillo(i));
         }
@@ -19,7 +19,7 @@ public class Torre {
 
     public Torre(int idx) {
 
-        anillos = new Stack<Anillo>();
+        anillos = new Stack<>();
         index = idx;
     }
 

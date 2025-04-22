@@ -36,7 +36,7 @@ public abstract class ImageTransformBuilder {
             if (transformation.equals(ImageTransformationType.gris.toString()))
                 return new GrisTransformBuilder(transformationArguments);
         }
-        return new NoTransformBuilder(cmdAndArgs);
+        return new NoTransformBuilder();
     }
 
     public abstract ImageTransformation build();
